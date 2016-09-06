@@ -1,4 +1,12 @@
 /* test */
- canvas {
- 	border: 1px solid black;
- }
+//test
+#board>div{
+	width:10px;
+	height:10px;
+	background-color:black;
+	float:left;
+}
+
+#board>div.live{
+	background-color:green;
+	}
