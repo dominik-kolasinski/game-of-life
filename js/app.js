@@ -1,55 +1,40 @@
 document.addEventListener("DOMContentLoaded", function(){
-	function setStart(){
-
-	}
-
-	function setCellState(x,y,state){
-
-	}
-
-	function computeCellNextState(x,y){
-
-	}
-
-	function computeNextGeneration(){
-
-	}
-
-	function printNextGeneration(){
-
-	}
-
-	function Start(){
-
-	}
-
-	function Play(){
-		
-	}
-
-	function Pause(){
-		
-	}
-
+	
 	function GameOfLife(boardWidth,boardHeight) {
 		var self = this;
+		this.interval;
 		this.width = boardWidth;
 		this.height = boardHeight;
 		this.board = document.getElementById("board");
-		createBoard();
-		this.cells = document.querySelectorAll("#board>div");
-		firstGlider();
-		computeNextGeneration();
-		document.getElementById("play").addEventListener("click", computeOneCycle);
 		
+			setButtons();
+			createBoard();
+			firstGlider();
 
+		this.cells = document.querySelectorAll("#board>div");
+
+		function startSimulation(){
+			 self.interval = setInterval(computeOneCycle, 500);
+		}
+
+		function stopSimulation(){
+			window.clearInterval(self.interval);
+		}
+
+		function computeOneCycle(){
+			computeNextGeneration();
+			printNextGeneration();
+		}
+
+		function setButtons(){
+			document.getElementById("play").addEventListener("click",startSimulation);
+			document.getElementById("pause").addEventListener("click",stopSimulation);
+		}		
+		
 		function createBoard(){
 			self.board.style.width = boardWidth*10+"px";
 			self.board.style.height = boardHeight*10+"px";
-			console.log(self.board.style.width);
-			console.log(self.board.style.height);
 			boardCellsAll = boardWidth*boardHeight;
-			console.log(boardCellsAll);
 
 			for(var i = 0; i < boardCellsAll; i++){
 				var newDiv = document.createElement("div");
@@ -66,12 +51,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		}
 
 		function getIndex(x,y){
-			// if(x<0 || y<0 || x>49 || y>49){
-			// 	return false;
-			// }else{
-			// 	// return document.querySelectorAll("#board>div")[x+y*boardWidth];
-				return x+y*boardWidth;
-			// }
+			return x+y*boardWidth;
 		}
 
 		function setCellState(x,y,state){
@@ -81,69 +61,70 @@ document.addEventListener("DOMContentLoaded", function(){
 		}
 
 		function firstGlider(){
-			setCellState(0,0,"live");
-			setCellState(0,1,"live");
-			setCellState(0,2,"live");
-			setCellState(0,3,"live");
-			setCellState(0,4,"live");
-
-			setCellState(1,0,"live");
-			// setCellState(1,1,"live");
-			setCellState(1,2,"live");
-			// setCellState(1,3,"live");
-			setCellState(1,4,"live");
+			setCellState(3,3,"live");
+			setCellState(4,4,"live");
+			setCellState(4,5,"live");
+			setCellState(3,5,"live");
+			setCellState(2,5,"live");
 		}
 
 		function computeCellNextState(x,y){
 				var liveNeighbours = 0;
 				emptyNeighbours = 0;
 
-				if(x-1<0 || y-1<0){
+				if(x==0 || y==0){
 					emptyNeighbours++;
 				}else if(self.cells[getIndex(x-1,y-1)].classList.contains("live")){
 					liveNeighbours++;	
 				}
-				if(y-1<0){
+				if(y==0){
 					emptyNeighbours++;
 				}else if(self.cells[getIndex(x,y-1)].classList.contains("live")){
 					liveNeighbours++;
 				}
-				if(x+1>49 || y-1<0){
+				if(x==self.width-1 || y==0){
 					emptyNeighbours++;
 				}else if(self.cells[getIndex(x+1,y-1)].classList.contains("live")){
 					liveNeighbours++;
 				}
-				if(x-1<0){
+				if(x==0){
 					emptyNeighbours++;
 				}else if(self.cells[getIndex(x-1,y)].classList.contains("live")){
 					liveNeighbours++;
 				}
-				if(x+1>49){
+				if(x==self.width-1){
 					emptyNeighbours++;
 				}else if(self.cells[getIndex(x+1,y)].classList.contains("live")){
 					liveNeighbours++;
 				}
-				if(x-1<0 || y+1>49){
+				if(x==0 || y==self.height-1){
 					emptyNeighbours++;
 				}else if(self.cells[getIndex(x-1,y+1)].classList.contains("live")){
 					liveNeighbours++;
 				}
-				if(y+1>49){
+				if(y==self.height-1){
 					emptyNeighbours++;
 				}else if(self.cells[getIndex(x,y+1)].classList.contains("live")){
 					liveNeighbours++;
 				}
-				if(x+1>49 || y+1>49){
+				if(x==self.width-1 || y==self.height-1){
 					emptyNeighbours++;
 				}else if(self.cells[getIndex(x+1,y+1)].classList.contains("live")){
 					liveNeighbours++;
 				}			
 
-				if(liveNeighbours<2 || liveNeighbours>3){
-					return 0;
-				}else{
-					return 1;
+				if(self.cells[getIndex(x,y)].classList.contains("live")){
+					if(liveNeighbours<2 || liveNeighbours>3){
+						return 0;
+					}else if(liveNeighbours==2 || liveNeighbours==3){
+						return 1;
+					}	
+				}else if(!self.cells[getIndex(x,y)].classList.contains("live")){
+					if(liveNeighbours==3){
+						return 1;
+					}
 				}
+				
 				
 
 			// 1. sąsiad: x-1, y-1
@@ -162,8 +143,8 @@ document.addEventListener("DOMContentLoaded", function(){
 
 		function computeNextGeneration(){
 			nextCells = [];
-			for(var i = 0; i <= 49; i++){
-				for(var j = 0; j <=49; j++){
+			for(var i = 0; i < 50; i++){
+				for(var j = 0; j < 50; j++){
 					// if(computeCellNextState(j,i) == undefined){
 						// emptyNeighboursCount++;
 					// }else{
@@ -171,18 +152,13 @@ document.addEventListener("DOMContentLoaded", function(){
 					// }
 				}
 			}
-			console.log(nextCells);
-			console.log(emptyNeighbours);
 		}
 
 		function printNextGeneration(){
-			console.log("next generation!");
 			for(var i=0; i<self.cells.length;i++){
 				if(nextCells[i]==1){
-					console.log("live");
 					self.cells[i].classList.add("live");
 				}else if(nextCells[i]==0){
-					console.log("dead");
 					self.cells[i].classList.remove("live");
 				}
 			}
