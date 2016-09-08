@@ -7,14 +7,14 @@ document.addEventListener("DOMContentLoaded", function(){
 		this.height = boardHeight;
 		this.board = document.getElementById("board");
 		
-			setButtons();
-			createBoard();
-			firstGlider();
+		setButtons();
+		createBoard();
+		firstGlider();
 
 		this.cells = document.querySelectorAll("#board>div");
 
 		function startSimulation(){
-			 self.interval = setInterval(computeOneCycle, 500);
+			 self.interval = setInterval(computeOneCycle, 200);
 		}
 
 		function stopSimulation(){
@@ -69,87 +69,69 @@ document.addEventListener("DOMContentLoaded", function(){
 		}
 
 		function computeCellNextState(x,y){
-				var liveNeighbours = 0;
-				emptyNeighbours = 0;
+			var liveNeighbours = 0;
+			emptyNeighbours = 0;
 
-				if(x==0 || y==0){
-					emptyNeighbours++;
-				}else if(self.cells[getIndex(x-1,y-1)].classList.contains("live")){
-					liveNeighbours++;	
-				}
-				if(y==0){
-					emptyNeighbours++;
-				}else if(self.cells[getIndex(x,y-1)].classList.contains("live")){
-					liveNeighbours++;
-				}
-				if(x==self.width-1 || y==0){
-					emptyNeighbours++;
-				}else if(self.cells[getIndex(x+1,y-1)].classList.contains("live")){
-					liveNeighbours++;
-				}
-				if(x==0){
-					emptyNeighbours++;
-				}else if(self.cells[getIndex(x-1,y)].classList.contains("live")){
-					liveNeighbours++;
-				}
-				if(x==self.width-1){
-					emptyNeighbours++;
-				}else if(self.cells[getIndex(x+1,y)].classList.contains("live")){
-					liveNeighbours++;
-				}
-				if(x==0 || y==self.height-1){
-					emptyNeighbours++;
-				}else if(self.cells[getIndex(x-1,y+1)].classList.contains("live")){
-					liveNeighbours++;
-				}
-				if(y==self.height-1){
-					emptyNeighbours++;
-				}else if(self.cells[getIndex(x,y+1)].classList.contains("live")){
-					liveNeighbours++;
-				}
-				if(x==self.width-1 || y==self.height-1){
-					emptyNeighbours++;
-				}else if(self.cells[getIndex(x+1,y+1)].classList.contains("live")){
-					liveNeighbours++;
-				}			
+			if(x==0 || y==0){
+				emptyNeighbours++;
+			}else if(self.cells[getIndex(x-1,y-1)].classList.contains("live")){
+				liveNeighbours++;	
+			}
+			if(y==0){
+				emptyNeighbours++;
+			}else if(self.cells[getIndex(x,y-1)].classList.contains("live")){
+				liveNeighbours++;
+			}
+			if(x==self.width-1 || y==0){
+				emptyNeighbours++;
+			}else if(self.cells[getIndex(x+1,y-1)].classList.contains("live")){
+				liveNeighbours++;
+			}
+			if(x==0){
+				emptyNeighbours++;
+			}else if(self.cells[getIndex(x-1,y)].classList.contains("live")){
+				liveNeighbours++;
+			}
+			if(x==self.width-1){
+				emptyNeighbours++;
+			}else if(self.cells[getIndex(x+1,y)].classList.contains("live")){
+				liveNeighbours++;
+			}
+			if(x==0 || y==self.height-1){
+				emptyNeighbours++;
+			}else if(self.cells[getIndex(x-1,y+1)].classList.contains("live")){
+				liveNeighbours++;
+			}
+			if(y==self.height-1){
+				emptyNeighbours++;
+			}else if(self.cells[getIndex(x,y+1)].classList.contains("live")){
+				liveNeighbours++;
+			}
+			if(x==self.width-1 || y==self.height-1){
+				emptyNeighbours++;
+			}else if(self.cells[getIndex(x+1,y+1)].classList.contains("live")){
+				liveNeighbours++;
+			}			
 
-				if(self.cells[getIndex(x,y)].classList.contains("live")){
-					if(liveNeighbours<2 || liveNeighbours>3){
-						return 0;
-					}else if(liveNeighbours==2 || liveNeighbours==3){
-						return 1;
-					}	
-				}else if(!self.cells[getIndex(x,y)].classList.contains("live")){
-					if(liveNeighbours==3){
-						return 1;
-					}
+			if(self.cells[getIndex(x,y)].classList.contains("live")){
+				if(liveNeighbours<2 || liveNeighbours>3){
+					return 0;
+				}else if(liveNeighbours==2 || liveNeighbours==3){
+					return 1;
+				}	
+			}else if(!self.cells[getIndex(x,y)].classList.contains("live")){
+				if(liveNeighbours==3){
+					return 1;
 				}
+			}
 				
-				
-
-			// 1. sąsiad: x-1, y-1
-			// 2. sąsiad: x, y-1
-			// 3. sąsiad: x+1, y-1
-			// 4. sąsiad: x-1, y
-			// 5. sąsiad: x+1, y
-			// 6. sąsiad: x-1, y+1
-			// 7. sąsiad: x, y+1
-			// 8. sąsiad: x+1, y+1
-			// Any live cell with fewer than two live neighbours dies, as if caused by under-population.
-			// Any live cell with two or three live neighbours lives on to the next generation.
-			// Any live cell with more than three live neighbours dies, as if by over-population.
-			// Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
 		}
 
 		function computeNextGeneration(){
 			nextCells = [];
 			for(var i = 0; i < 50; i++){
 				for(var j = 0; j < 50; j++){
-					// if(computeCellNextState(j,i) == undefined){
-						// emptyNeighboursCount++;
-					// }else{
-						nextCells.push(computeCellNextState(j,i));	
-					// }
+					nextCells.push(computeCellNextState(j,i));	
 				}
 			}
 		}
@@ -171,10 +153,5 @@ document.addEventListener("DOMContentLoaded", function(){
 	}
 
 	var gol1 = new GameOfLife(50,50);
-	console.log(gol1);
-	console.log(gol1.width);
-	console.log(gol1.height);
-	console.log(gol1.board);
-	console.log(gol1.cells);
 
 });
